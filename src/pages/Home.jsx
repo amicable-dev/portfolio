@@ -3,6 +3,8 @@ import {
   Code, Database, Globe, Server, 
   Smartphone, Layers, Zap, Cpu, FileCode 
 } from 'lucide-react';
+import beansImage from '../assets/beans.png';
+import bitmojiVideo from '../assets/bitmoji.mp4';
 
 const Home = () => {
   return (
@@ -46,7 +48,7 @@ const Home = () => {
               onContextMenu={(e) => e.preventDefault()}
               className="w-full h-full object-cover"
             >
-              <source src="/src/assets/bitmoji.mp4" type="video/mp4" />
+              <source src={bitmojiVideo} type="video/mp4" />
               {/* Fallback to GitHub icon if video fails */}
               <Github className="w-12 h-12 sm:w-16 sm:h-16 text-[#D5CEA3]" />
             </video>
@@ -181,7 +183,7 @@ const Home = () => {
               onContextMenu={(e) => e.preventDefault()}
               className="w-full h-full object-cover"
             >
-              <source src="/src/assets/bitmoji.mp4" type="video/mp4" />
+              <source src={bitmojiVideo} type="video/mp4" />
               {/* Fallback to GitHub icon if video fails */}
               <Github className="w-16 h-16 text-[#D5CEA3]" />
             </video>
@@ -194,7 +196,7 @@ const Home = () => {
         {/* 3 - Picture */}
         <div className="col-span-2 row-span-5 col-start-5 row-start-1 bg-white/10 rounded-2xl shadow-lg overflow-hidden hover:scale-[1.02] transition-all duration-300 h-full w-full">
           <img
-            src="/src/assets/beans.png"
+            src={beansImage}
             alt="coffee beans"
             className="h-full w-full object-cover object-center block"
           />
