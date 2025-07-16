@@ -5,8 +5,43 @@ import {
 } from 'lucide-react';
 import beansImage from '../assets/beans.png';
 import bitmojiVideo from '../assets/bitmoji.mp4';
+import { useState, useRef, useEffect } from 'react';
+
 
 const Home = () => {
+  const [isVideoLoading, setIsVideoLoading] = useState(true);
+  const videoRef = useRef(null);
+
+  useEffect(() => {
+    const video = videoRef.current;
+    
+    if (video) {
+      video.oncanplaythrough = () => {
+        setIsVideoLoading(false);
+      };
+      
+      video.onerror = () => {
+        setIsVideoLoading(false);
+      };
+      
+      // Fallback in case the events don't fire
+      const timeout = setTimeout(() => {
+        setIsVideoLoading(false);
+      }, 3000);
+      
+      return () => clearTimeout(timeout);
+    }
+  }, []);
+
+  // Custom loader component
+  const VideoLoader = () => (
+    <div className="absolute inset-0 flex items-center justify-center">
+      <div className="relative w-16 h-16">
+        <div className="absolute inset-0 border-4 border-t-[#D5CEA3] border-r-transparent border-b-transparent border-l-transparent rounded-full animate-spin"></div>
+        <div className="absolute inset-0 border-4 border-t-transparent border-r-transparent border-b-[#D5CEA3] border-l-transparent rounded-full animate-spin-reverse"></div>
+      </div>
+    </div>
+  );
   return (
     <section
       id="home"
@@ -30,15 +65,17 @@ const Home = () => {
           </p>
         </div>
 
-        {/* 3 - GitHub Card - Updated with video and full clickability */}
+        {/* 3 - GitHub Card  */}
         <a 
           href="https://github.com/amicable-dev" 
           target="_blank" 
           rel="noopener noreferrer"
           className="block bg-white/10 backdrop-blur-xl rounded-2xl shadow-xl p-6 text-center transition-transform duration-300 hover:scale-[1.01] cursor-pointer"
         >
-          <div className="w-24 h-24 sm:w-28 sm:h-28 rounded-full mb-4 border-4 border-[#D5CEA3] mx-auto overflow-hidden">
+          <div className="w-24 h-24 sm:w-28 sm:h-28 rounded-full mb-4 border-4 border-[#D5CEA3] mx-auto overflow-hidden relative">
+            {isVideoLoading && <VideoLoader />}
             <video
+              ref={videoRef}
               autoPlay
               muted
               loop
@@ -47,6 +84,7 @@ const Home = () => {
               controls={false}
               onContextMenu={(e) => e.preventDefault()}
               className="w-full h-full object-cover"
+              style={{ display: isVideoLoading ? 'none' : 'block' }}
             >
               <source src={bitmojiVideo} type="video/mp4" />
               {/* Fallback to GitHub icon if video fails */}
@@ -165,15 +203,16 @@ const Home = () => {
           </p>
         </div>
 
-        {/* 2 - GitHub Card - Updated to make whole div clickable */}
         <a 
           href="https://github.com/amicable-dev" 
           target="_blank" 
           rel="noopener noreferrer"
           className="col-span-2 row-span-4 col-start-3 row-start-4 bg-white/10 backdrop-blur-xl rounded-3xl shadow-xl p-6 flex flex-col items-center justify-center text-center transition-transform duration-300 hover:scale-[1.01] cursor-pointer"
         >
-          <div className="w-28 h-28 rounded-full mb-4 border-4 border-[#D5CEA3] overflow-hidden">
+          <div className="w-28 h-28 rounded-full mb-4 border-4 border-[#D5CEA3] overflow-hidden relative">
+            {isVideoLoading && <VideoLoader />}
             <video
+              ref={videoRef}
               autoPlay
               muted
               loop
@@ -182,6 +221,7 @@ const Home = () => {
               controls={false}
               onContextMenu={(e) => e.preventDefault()}
               className="w-full h-full object-cover"
+              style={{ display: isVideoLoading ? 'none' : 'block' }}
             >
               <source src={bitmojiVideo} type="video/mp4" />
               {/* Fallback to GitHub icon if video fails */}
@@ -192,6 +232,7 @@ const Home = () => {
             @amicable-dev
           </span>
         </a>
+
 
         {/* 3 - Picture */}
         <div className="col-span-2 row-span-5 col-start-5 row-start-1 bg-white/10 rounded-2xl shadow-lg overflow-hidden hover:scale-[1.02] transition-all duration-300 h-full w-full">
