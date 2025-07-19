@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Mail, Github, Linkedin, Send, CheckCircle, AlertCircle, Copy, Check } from 'lucide-react';
+import { Mail, Github, Linkedin, Send, CheckCircle, AlertCircle, Copy, Check, Download, FileText } from 'lucide-react';
 
 export default function ContactPage() {
   const [formData, setFormData] = useState({
@@ -12,17 +12,19 @@ export default function ContactPage() {
   const [submitStatus, setSubmitStatus] = useState(null);
   const [validationErrors, setValidationErrors] = useState({});
   const [isCopied, setIsCopied] = useState(false);
+  const [isOpening, setIsOpening] = useState(false);
 
-  // EmailJS Configuration - Replace with your actual credentials
+  // EmailJS Configuration
   const EMAIL_SERVICE_ID = import.meta.env.VITE_EMAIL_SERVICE_ID;
   const EMAIL_TEMPLATE_ID = import.meta.env.VITE_EMAIL_TEMPLATE_ID;
   const EMAIL_PUBLIC_KEY = import.meta.env.VITE_EMAIL_PUBLIC_KEY;
 
   const userEmail = "raghavsinghkhatri01@gmail.com";
+  const resumeUrl = "https://drive.google.com/file/d/1ejCM_iBqeeRBX5oWOA7kn87CtxJrLfoZ/view?usp=sharing";
 
-  // Initialize EmailJS when component mounts
+
   useEffect(() => {
-    // Load EmailJS script dynamically
+
     const script = document.createElement('script');
     script.src = 'https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js';
     script.onload = () => {
@@ -42,7 +44,7 @@ export default function ContactPage() {
       [name]: value
     }));
     
-    // Clear validation error when user starts typing
+
     if (validationErrors[name]) {
       setValidationErrors(prev => ({
         ...prev,
@@ -88,6 +90,18 @@ export default function ContactPage() {
       document.body.removeChild(textArea);
       setIsCopied(true);
       setTimeout(() => setIsCopied(false), 2000);
+    }
+  };
+
+  const openResume = async () => {
+    setIsOpening(true);
+    try {
+      // Open resume in a new tab
+      window.open(resumeUrl, '_blank', 'noopener,noreferrer');
+    } catch (error) {
+      console.error('Failed to open resume:', error);
+    } finally {
+      setTimeout(() => setIsOpening(false), 1000);
     }
   };
 
@@ -226,6 +240,35 @@ export default function ContactPage() {
               </div>
             </a>
           </div>
+
+          {/* Resume Card - Mobile */}
+          <div>
+            <div 
+              className="bg-white/10 backdrop-blur-xl hover:scale-[1.01] rounded-2xl p-6 transition-all cursor-pointer"
+              onClick={openResume}
+            >
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-4">
+                  <div className="flex items-center justify-center w-12 h-12 bg-[#1A120B] rounded-full">
+                    <FileText className="w-6 h-6 text-[#E5E5CB]" />
+                  </div>
+                  <div>
+                    <div className="text-[#E5E5CB] text-lg font-medium">My Resume</div>
+                    <div className="text-[#E5E5CB] text-sm opacity-70">View my latest resume</div>
+                  </div>
+                </div>
+                <div className="flex items-center justify-center w-8 h-8 text-[#E5E5CB]">
+                  {isOpening ? (
+                    <div className="w-5 h-5 border-2 border-[#E5E5CB] border-t-transparent rounded-full animate-spin"></div>
+                  ) : (
+                    <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+                    </svg>
+                  )}
+                </div>
+              </div>
+            </div>
+          </div>
         </div>
 
         {/* Desktop Layout */}
@@ -263,7 +306,8 @@ export default function ContactPage() {
             </div>
           </a>
 
-          <a href="https://github.com/amicable-dev" target="_blank" rel="noopener noreferrer" className="col-span-2 row-span-8 col-start-4 row-start-1">
+          {/* GitHub Card - Reduced to 4 rows (square) */}
+          <a href="https://github.com/amicable-dev" target="_blank" rel="noopener noreferrer" className="col-span-2 row-span-4 col-start-4 row-start-1">
             <div className="w-full h-full bg-white/10 backdrop-blur-xl hover:scale-[1.01] rounded-2xl p-8 transition-transform cursor-pointer block">
               <div className="flex items-center justify-center w-16 h-16 bg-[#1A120B] rounded-full mb-6">
                 <Github className="w-8 h-8 text-[#E5E5CB]" />
@@ -272,6 +316,33 @@ export default function ContactPage() {
               <p className="text-[#E5E5CB] text-sm">Find more of my repositories</p>
             </div>
           </a>
+
+          {/* Resume Card - Desktop */}
+          <div 
+            className="col-span-2 row-span-4 col-start-4 row-start-5 bg-white/10 backdrop-blur-xl hover:scale-[1.01] rounded-2xl p-8 transition-all cursor-pointer"
+            onClick={openResume}
+          >
+            <div className="flex items-center justify-center w-16 h-16 bg-[#1A120B] rounded-full mb-6">
+              <FileText className="w-8 h-8 text-[#E5E5CB]" />
+            </div>
+            <h3 className="text-[#E5E5CB] text-xl font-bold mb-2">My Resume</h3>
+            <p className="text-[#E5E5CB] text-sm mb-4">View my latest resume</p>
+            <div className="flex items-center gap-2 text-[#E5E5CB] text-sm">
+              {isOpening ? (
+                <>
+                  <div className="w-4 h-4 border-2 border-[#E5E5CB] border-t-transparent rounded-full animate-spin"></div>
+                  <span>Opening...</span>
+                </>
+              ) : (
+                <>
+                  <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+                  </svg>
+                  <span>Click to view</span>
+                </>
+              )}
+            </div>
+          </div>
         </div>
 
         {/* Contact Form */}
